@@ -1,0 +1,77 @@
+﻿@page "/todo"
+
+<h3>Add Task</h3>
+<div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="What to do?"
+        @bind="newTodo" aria-label="New Todo task" @onkeyup="@Enter">
+
+    <!--<select class="form-select" aria-label="Example select with button addon">
+        <option selected>Choose When...</option>
+        <option value="1">Today</option>
+        <option value="2">Tomorrow</option>
+        <option value="3">This Week</option>
+        <option value="4">This Month</option>
+        <option value="5">This Year</option>
+        <option value="6">Someday</option>
+    </select>-->
+
+    <button class="btn btn-outline-primary" type="button" @onclick="AddTodo">
+        <i class="fa-solid fa-circle-plus fa-2x"></i>
+    </button>
+</div>
+
+<h3>@Heading
+    <span class="badge bg-primary rounded-pill">
+        @todoItems.Count(x => x.IsDone== true)/@todoItems.Count
+    </span>
+</h3>
+<ul class="list-group">
+    @foreach (var todo in todoItems)
+    {
+        <div class="input-group mb-3" @key="@todo">
+            <div class="input-group-text">
+                <input class="form-check-input mt-0 btn-outlined-primary"
+                type="checkbox" @bind="todo.IsDone"
+                aria-label="Checkbox for following Todo task">
+            </div>
+            @if (todo.IsDone)
+            {
+                <input type="text" class="form-control text-decoration-line-through"
+            @bind="todo.Title" aria-label="Todo task with a checkbox" disabled>
+            }
+            else
+            {
+                <input type="text" class="form-control" @bind="todo.Title"
+            aria-label="Todo task with a checkbox">
+            }
+            <button class="btn btn-outline-danger" type="button"
+            @onclick="@(() => todoItems.Remove(todo))">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
+        </div>
+    }
+</ul>
+
+
+@code {
+    private List<TodoItem> todoItems = new();
+    private string? newTodo;
+    [Parameter]
+    public string? Heading { get; set; } = "All Tasks";
+
+    private void AddTodo()
+    {
+        if (!string.IsNullOrWhiteSpace(newTodo))
+        {
+            todoItems.Add(new TodoItem { Title = newTodo });
+            newTodo = string.Empty;
+        }
+    }
+    private void Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            AddTodo();
+        }
+    }
+}

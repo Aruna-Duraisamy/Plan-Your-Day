@@ -1,0 +1,17 @@
+﻿<header class="p-3 bg-dark bg-gradient text-white">
+    <div class="container">
+        <div
+            class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between ">
+            <h1
+                class="d-flex align-items-center col-md-6 mb-2 mb-md-0 text-white">
+                @displayDate</h1>
+            <h1 class="col-md-3 text-end">@onlyTime</h1>
+        </div>
+    </div>
+</header>
+
+
+@code {
+    private string onlyTime = DateTime.Now.ToString("HH:mm:ss tt");
+    private string displayDate = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
+}

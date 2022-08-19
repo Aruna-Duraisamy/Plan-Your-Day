@@ -1,0 +1,27 @@
+﻿<h1>@GetGreeting()</h1>
+<hr />
+
+
+@code {
+    private DateTime currentTime = DateTime.Now;
+    private string greeting = string.Empty;
+
+    [Parameter]
+    public string name { get; set; } = "World";
+
+    private string GetGreeting()
+    {
+        if (currentTime.Hour < 12)
+        {
+            return $"Good Morning {@name}!";
+        }
+        else if (currentTime.Hour < 17)
+        {
+            return $"Good Afternoon {@name}!";
+        }
+        else
+        {
+            return $"Good Evening {@name}!";
+        }
+    }
+}
