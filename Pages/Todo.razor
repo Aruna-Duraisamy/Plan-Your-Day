@@ -25,12 +25,27 @@
         @todoItems.Count(x => x.IsDone== true)/@todoItems.Count
     </span>
 </h3>
-<ul class="list-group">
+<ul class="list-group" ondragover="event.preventDefault();">
     @foreach (var todo in todoItems)
     {
-        <div class="input-group mb-3" @key="@todo">
+        <div class="input-group mb-3" draggable="true" @key="@todo"
+        @ondragleave="@(()=> {todo.IsDragOver = false;})"
+        @ondragenter="@(()=>{todo.IsDragOver = true;})"
+        style="@(todo.IsDragOver?"border: 2px dotted red":"")"
+        @ondrop="@(()=> HandleDrop(todo))"
+        @ondragstart="@(()=> HandleStartDrag(todo))">
+            <button type="button" class="btn btn btn-outline-secondary"
+            id="basic-addon1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                fill="currentColor" class="bi bi-grip-vertical"
+                viewBox="0 0 16 16">
+                    <path
+                    d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z">
+                    </path>
+                </svg>
+            </button>
             <div class="input-group-text">
-                <input class="form-check-input mt-0 btn-outlined-primary"
+                <input class="form-check-input mt-0 btn-outline-secondary"
                 type="checkbox" @bind="todo.IsDone"
                 aria-label="Checkbox for following Todo task">
             </div>
@@ -73,5 +88,28 @@
         {
             AddTodo();
         }
+    }
+
+    int currentIndex;
+    private void HandleDrop(TodoItem item)
+    {
+        if (item != null)
+        {
+            int index = todoItems.FindIndex(a => a.Title == item.Title);
+            // get current item
+            var current = todoItems[currentIndex];
+            // remove game from current index
+            todoItems.RemoveAt(currentIndex);
+            todoItems.Insert(index, current);
+            // update current selection
+            currentIndex = index;
+            item.IsDragOver = false;
+            StateHasChanged();
+        }
+    }
+    private void HandleStartDrag(TodoItem item)
+    {
+        currentIndex = todoItems.FindIndex(a => a.Title == item.Title);
+
     }
 }
